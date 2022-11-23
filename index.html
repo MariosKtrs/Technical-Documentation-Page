@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+      <link rel="stylesheet" href="styles.css">
+      <title>Vue JS</title>
+   </head>
+   <main id="main-doc">
+      <div class="combo">
+         <div class="text">
+            <section class="main-section" id="intro">
+               <header>
+                  Introduction
+               </header>
+               <p>
+                  Vue (pronounced /vjuː/, like view) is a JavaScript framework for building user interfaces. It builds on top of standard HTML, CSS, and JavaScript and provides a declarative and component-based programming model that helps you efficiently develop user interfaces, be they simple or complex.
+               </p>
+               <p>
+                  Vue has two core features:
+               </p>
+               <ul>
+                  <li>
+                     Declarative Rendering: Vue extends standard HTML with a template syntax that allows us to declaratively describe HTML output based on JavaScript state.
+                  </li>
+                  <li>
+                     Reactivity: Vue automatically tracks JavaScript state changes and efficiently updates the DOM when changes happen.
+                  </li>
+               </ul>
+               <p>
+                  You may already have questions - don't worry. We will cover every little detail in the rest of the documentation. For now, please read along so you can have a high-level understanding of what Vue offers.
+               </p>
+               <p>
+                  Vue is a framework and ecosystem that covers most of the common features needed in frontend development. But the web is extremely diverse - the things we build on the web may vary drastically in form and scale. With that in mind, Vue is designed to be flexible and incrementally adoptable. Depending on your use case, Vue can be used in different ways:
+               <ul>
+                  <li>Enhancing static HTML without a build step</li>
+                  <li>Embedding as Web Components on any page</li>
+                  <li>Single-Page Application (SPA)</li>
+                  <li>Fullstack / Server-Side Rendering (SSR)</li>
+                  <li>Jamstack / Static Site Generation (SSG)</li>
+                  <li>Targeting desktop, mobile, WebGL, and even the terminal</li>
+               </ul>
+               </p>
+            </section>
+            <section class="main-section" id="creating-app">
+               <header>
+                  Creating an Application
+               </header>
+               <p>
+                  Every Vue application starts by creating a new application instance with the createApp function:
+               </p>
+               <div class="code-block">
+                  <pre><code>
+import { createApp } from 'vue'
+
+const app = createApp({
+  /* root component options */
+})
+        </code></pre>
+               </div>
+            </section>
+            <section class="main-section" id="react-funds">
+               <header>
+                  Reactivity Fundamentals
+               </header>
+               <p>
+                  With Options API, we use the data option to declare reactive state of a component. The option value should be a function that returns an object. Vue will call the function when creating a new component instance, and wrap the returned object in its reactivity system. Any top-level properties of this object are proxied on the component instance (this in methods and lifecycle hooks):
+               </p>
+               <div class="code-block">
+                  <pre><code>
+export default {
+  data() {
+    return {
+      count: 1
+    }
+  },
+  // `mounted` is a lifecycle hook which we will explain later
+  mounted() {
+    // `this` refers to the component instance.
+    console.log(this.count) // => 1
+    // data can be mutated as well
+    this.count = 2
+  }
+}
+        </code></pre>
+               </div>
+            </section>
+            <section class="main-section" id="lifecycle-hooks">
+               <header>
+                  Lifecycle Hooks
+               </header>
+               <p>
+                  Each Vue component instance goes through a series of initialization steps when it's created - for example, it needs to set up data observation, compile the template, mount the instance to the DOM, and update the DOM when data changes. Along the way, it also runs functions called lifecycle hooks, giving users the opportunity to add their own code at specific stages.
+               </p>
+               <p>
+                  For example, the mounted hook can be used to run code after the component has finished the initial rendering and created the DOM nodes:
+               </p>
+               <div class="code-block">
+                  <pre><code>
+export default {
+  mounted() {
+    console.log(`the component is now mounted.`)
+  }
+}
+</code>
+</pre>
+               </div>
+               <p>
+                  There are also other hooks which will be called at different stages of the instance's lifecycle, with the most commonly used being mounted, updated, and unmounted.
+               </p>
+               <p>
+                  All lifecycle hooks are called with their this context pointing to the current active instance invoking it. Note this means you should avoid using arrow functions when declaring lifecycle hooks, as you won't be able to access the component instance via this if you do so.
+               </p>
+            </section>
+            <section class="main-section" id="events">
+               <header>
+                  Events
+               </header>
+               <p>
+                  We can use the v-on directive, which we typically shorten to the @ symbol, to listen to DOM events and run some JavaScript when they're triggered. The usage would be v-on:click="handler" or with the shortcut, @click="handler".
+               </p>
+               <p>
+                  The handler value can be one of the following:
+               </p>
+               <ol>
+                  <li>Inline handlers: Inline JavaScript to be executed when the event is triggered (similar to the native onclick attribute).</li>
+                  <li>Method handlers: A property name or path that points to a method defined on the component.</li>
+               </ol>
+               <p>
+                  The logic for many event handlers will be more complex though, and likely isn't feasible with inline handlers. That's why v-on can also accept the name or path of a component method you'd like to call.</br></br>
+                  For example:
+               </p>
+               <div class="code-block">
+                  <pre><code>
+data() {
+  return {
+    name: 'Vue.js'
+  }
+},
+methods: {
+  greet(event) {
+    // `this` inside methods points to the current active instance
+    alert(`Hello ${this.name}!`)
+    // `event` is the native DOM event
+    if (event) {
+      alert(event.target.tagName)
+    }
+  }
+}
+</code>
+</pre>
+               </div>
+            </section>
+            </section>
+            <section class="main-section" id="async-components">
+               <header>Async Components</header>
+               <p>
+                  In large applications, we may need to divide the app into smaller chunks and only load a component from the server when it's needed. To make that possible, Vue has a defineAsyncComponent function:
+               </p>
+               <div class="code-block">
+                  <pre><code>
+import { defineAsyncComponent } from 'vue'
+
+const AsyncComp = defineAsyncComponent(() => {
+  return new Promise((resolve, reject) => {
+    // ...load component from server
+    resolve(/* loaded component */)
+  })
+})
+// ... use `AsyncComp` like a normal component
+               
+               </div>
+               </code></pre>
+               <p>
+                  As you can see, defineAsyncComponent accepts a loader function that returns a Promise. The Promise's resolve callback should be called when you have retrieved your component definition from the server. You can also call reject(reason) to indicate the load has failed.
+               </p>
+            </section>
+            <section class="main-section" id="reference">
+            <header>
+               Reference
+            </header>
+            <ul>
+               <li>All of the Documentation in this page is taken from <a href=https://vuejs.org/guide/essentials/application.html#multiple-application-instancesvuejs.org>vuejs.org</a></li>
+            </ul>
+         </div>
+         <div class="nav-bar">
+            <nav id="navbar">
+               <header class="vue-header">Vue JS Documentation</header>
+               <a class="nav-link" href="#intro">Introduction</a>
+               <a class="nav-link" href="#creating-app">Creating an Application</a>
+               <a class="nav-link" href="#react-funds">Reactivity Fundamentals</a>
+               <a class="nav-link" href="#lifecycle-hooks">Lifecycle Hooks</a>
+               <a class="nav-link" href="#events">Events</a>
+               <a class="nav-link" href="#async-components">Async Components</a>
+               <a class="nav-link" href="#reference">Reference</a>
+            </nav>
+         </div>
+      </div>
+   </main>
